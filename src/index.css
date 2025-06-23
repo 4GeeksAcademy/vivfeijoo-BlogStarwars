@@ -1,0 +1,11 @@
+.d-flex.overflow-auto {
+  scrollbar-width: thin;
+  scrollbar-color: #999 transparent;
+}
+.d-flex.overflow-auto::-webkit-scrollbar {
+  height: 8px;
+}
+.d-flex.overflow-auto::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 4px;
+}
