@@ -1,11 +1,57 @@
-.d-flex.overflow-auto {
-  scrollbar-width: thin;
-  scrollbar-color: #999 transparent;
+body {
+  background-color: #f8f9fa;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
-.d-flex.overflow-auto::-webkit-scrollbar {
-  height: 8px;
+
+/* Card spacing and layout */
+.card {
+  transition: transform 0.2s ease-in-out;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
-.d-flex.overflow-auto::-webkit-scrollbar-thumb {
-  background-color: #ccc;
-  border-radius: 4px;
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+/* Center the sections and titles */
+h2 {
+  margin-top: 2rem;
+  font-weight: bold;
+}
+
+/* Image fallback placeholder */
+.card-img-top {
+  object-fit: cover;
+  height: 200px;
+}
+
+/* Fix spacing in single page */
+.container .row {
+  margin-bottom: 2rem;
+}
+
+/* Star Wars logo custom size */
+.logo-img {
+  width: 100px;
+  height: auto;
+}
+
+/* Footer styling (optional) */
+.footer {
+  background-color: #212529;
+  color: white;
+  padding: 1rem 0;
+  text-align: center;
+  margin-top: 3rem;
+}
+
+/* Favorites dropdown menu */
+.dropdown-menu {
+  min-width: 200px;
+}
+
+.dropdown-menu .dropdown-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }

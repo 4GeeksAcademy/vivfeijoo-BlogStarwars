@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import App from './routes.jsx';
 import { StoreProvider } from './hooks/useGlobalReducer.jsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

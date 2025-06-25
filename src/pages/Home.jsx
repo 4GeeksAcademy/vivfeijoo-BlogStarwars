@@ -18,24 +18,7 @@ const Home = () => {
     try {
       const res = await fetch(`https://www.swapi.tech/api/${type}`);
       const data = await res.json();
-
-      const resultsWithDetails = await Promise.all(
-        data.results.map(async (item) => {
-          try {
-            const detailRes = await fetch(item.url);
-            const detailData = await detailRes.json();
-            return {
-              ...item,
-              ...detailData.result.properties,
-            };
-          } catch (err) {
-            console.error(`Error fetching detail for ${item.name}:`, err);
-            return item; // fallback
-          }
-        })
-      );
-
-      setState(resultsWithDetails);
+      setState(data.results);
     } catch (error) {
       console.error(`Error loading ${type}:`, error);
     }
@@ -63,12 +46,10 @@ const Home = () => {
           src={getImage(type, item.uid)}
           className="card-img-top"
           alt={item.name}
-          onError={(e) => {
-            if (!e.target.src.includes("big-placeholder.jpg")) {
-              e.target.src =
-                "https://starwars-visualguide.com/assets/img/big-placeholder.jpg";
-            }
-          }}
+          onError={(e) =>
+            (e.target.src =
+              "https://starwars-visualguide.com/assets/img/big-placeholder.jpg")
+          }
         />
         <div className="card-body">
           <h5 className="card-title">{item.name}</h5>
@@ -116,17 +97,17 @@ const Home = () => {
   return (
     <div className="container mt-4">
       <h2 className="text-danger mb-3">Characters</h2>
-      <div className="d-flex flex-row overflow-auto mb-4">
+      <div className="d-flex flex-row flex-nowrap overflow-auto mb-4 gap-3">
         {renderCards(people, "people")}
       </div>
 
       <h2 className="text-primary mb-3">Planets</h2>
-      <div className="d-flex flex-row overflow-auto mb-4">
+      <div className="d-flex flex-row flex-nowrap overflow-auto mb-4 gap-3">
         {renderCards(planets, "planets")}
       </div>
 
       <h2 className="text-success mb-3">Vehicles</h2>
-      <div className="d-flex flex-row overflow-auto mb-4">
+      <div className="d-flex flex-row flex-nowrap overflow-auto mb-4 gap-3">
         {renderCards(vehicles, "vehicles")}
       </div>
     </div>

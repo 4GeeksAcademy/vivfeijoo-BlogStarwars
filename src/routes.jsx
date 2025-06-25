@@ -14,6 +14,7 @@ const App = () => {
         <Route path="/planets/:uid" element={<Single />} />
         <Route path="/vehicles/:uid" element={<Single />} />
         <Route path="/demo" element={<Demo />} />
+        <Route path="/:type/:uid" element={<Single />} />
       </Routes>
     </Layout>
   );
