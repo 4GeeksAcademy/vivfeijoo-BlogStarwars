@@ -3,10 +3,20 @@ import { Link } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 
 const Home = () => {
-  const { store, dispatch } = useGlobalReducer();
   const [people, setPeople] = useState([]);
   const [planets, setPlanets] = useState([]);
   const [vehicles, setVehicles] = useState([]);
+  const { store, dispatch } = useGlobalReducer();
+
+  const fetchData = async (type, setter) => {
+    try {
+      const res = await fetch(`https://www.swapi.tech/api/${type}`);
+      const data = await res.json();
+      setter(data.results);
+    } catch (error) {
+      console.error(`Error fetching ${type}:`, error);
+    }
+  };
 
   useEffect(() => {
     fetchData("people", setPeople);
@@ -14,104 +24,74 @@ const Home = () => {
     fetchData("vehicles", setVehicles);
   }, []);
 
-  const fetchData = async (type, setState) => {
-    try {
-      const res = await fetch(`https://www.swapi.tech/api/${type}`);
-      const data = await res.json();
-      setState(data.results);
-    } catch (error) {
-      console.error(`Error loading ${type}:`, error);
-    }
-  };
-
-  const getImage = (type, uid) =>
-    `https://starwars-visualguide.com/assets/img/${type === "people" ? "characters" : type}/${uid}.jpg`;
-
-  const isFavorite = (item) =>
-    store.favorites.some((fav) => fav.uid === item.uid && fav.type === item.type);
-
-  const toggleFavorite = (item, type) => {
-    const payload = { ...item, type };
-    if (isFavorite(payload)) {
-      dispatch({ type: "REMOVE_FAVORITE", payload });
+  const handleFavorite = (item, type) => {
+    const exists = store.favorites.find(f => f.uid === item.uid && f.type === type);
+    if (exists) {
+      dispatch({ type: "REMOVE_FAVORITE", payload: item });
     } else {
-      dispatch({ type: "ADD_FAVORITE", payload });
+      dispatch({ type: "ADD_FAVORITE", payload: { ...item, type } });
     }
   };
 
   const renderCards = (items, type) =>
-    items.map((item) => (
-      <div className="card mx-2" style={{ width: "18rem", minWidth: "250px" }} key={item.uid}>
+    items.map(item => (
+      <div key={item.uid} className="card m-2" style={{ width: "18rem" }}>
         <img
-          src={getImage(type, item.uid)}
+          src={`https://starwars-visualguide.com/assets/img/${type === "people" ? "characters" : type}/${item.uid}.jpg`}
           className="card-img-top"
           alt={item.name}
-          onError={(e) =>
-            (e.target.src =
-              "https://starwars-visualguide.com/assets/img/big-placeholder.jpg")
-          }
         />
         <div className="card-body">
           <h5 className="card-title">{item.name}</h5>
-          <ul className="list-unstyled">
-            {type === "people" && (
-              <>
-                <li><strong>Gender:</strong> {item.gender || "n/a"}</li>
-                <li><strong>Hair Color:</strong> {item.hair_color || "n/a"}</li>
-                <li><strong>Eye Color:</strong> {item.eye_color || "n/a"}</li>
-              </>
-            )}
-            {type === "planets" && (
-              <>
-                <li><strong>Population:</strong> {item.population || "n/a"}</li>
-                <li><strong>Climate:</strong> {item.climate || "n/a"}</li>
-                <li><strong>Terrain:</strong> {item.terrain || "n/a"}</li>
-              </>
-            )}
-            {type === "vehicles" && (
-              <>
-                <li><strong>Model:</strong> {item.model || "n/a"}</li>
-                <li><strong>Manufacturer:</strong> {item.manufacturer || "n/a"}</li>
-                <li><strong>Cost:</strong> {item.cost_in_credits || "n/a"}</li>
-              </>
-            )}
-          </ul>
-          <div className="d-flex justify-content-between align-items-center mt-2">
-            <Link
-              to={`/${type}/${item.uid}`}
-              className="btn btn-outline-primary btn-sm"
-            >
-              Learn more!
-            </Link>
-            <button
-              className={`btn btn-sm ${isFavorite({ ...item, type }) ? "btn-warning" : "btn-outline-warning"}`}
-              onClick={() => toggleFavorite(item, type)}
-            >
-              ❤️
-            </button>
-          </div>
+          <Link to={`/${type}/${item.uid}`} className="btn btn-outline-primary btn-sm me-2">
+            Learn More
+          </Link>
+          <button
+            className="btn btn-outline-warning btn-sm"
+            onClick={() => handleFavorite(item, type)}
+          >
+            ♥
+          </button>
         </div>
       </div>
     ));
 
   return (
     <div className="container mt-4">
-      <h2 className="text-danger mb-3">Characters</h2>
-      <div className="d-flex flex-row flex-nowrap overflow-auto mb-4 gap-3">
-        {renderCards(people, "people")}
-      </div>
+      <h2>Characters</h2>
+      <div className="d-flex overflow-auto">{renderCards(people, "people")}</div>
 
-      <h2 className="text-primary mb-3">Planets</h2>
-      <div className="d-flex flex-row flex-nowrap overflow-auto mb-4 gap-3">
-        {renderCards(planets, "planets")}
-      </div>
+      <h2>Planets</h2>
+      <div className="d-flex overflow-auto">{renderCards(planets, "planets")}</div>
 
-      <h2 className="text-success mb-3">Vehicles</h2>
-      <div className="d-flex flex-row flex-nowrap overflow-auto mb-4 gap-3">
-        {renderCards(vehicles, "vehicles")}
+      <h2>Vehicles</h2>
+      <div className="d-flex overflow-auto">{renderCards(vehicles, "vehicles")}</div>
+
+      <h2>Favorites</h2>
+      <div className="d-flex overflow-auto">
+        {store.favorites.length === 0 ? (
+          <p>No favorites yet</p>
+        ) : (
+          store.favorites.map((fav, i) => (
+            <div key={i} className="card m-2" style={{ width: "12rem" }}>
+              <img
+                src={`https://starwars-visualguide.com/assets/img/${fav.type === "people" ? "characters" : fav.type}/${fav.uid}.jpg`}
+                className="card-img-top"
+                alt={fav.name}
+              />
+              <div className="card-body text-center">
+                <h6 className="card-title">{fav.name}</h6>
+                <Link to={`/${fav.type}/${fav.uid}`} className="btn btn-sm btn-outline-info">
+                  View
+                </Link>
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
 };
 
 export default Home;
+

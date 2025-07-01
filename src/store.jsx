@@ -6,7 +6,7 @@ export default function storeReducer(state, action) {
   switch (action.type) {
     case "ADD_FAVORITE":
       if (state.favorites.find(f => f.uid === action.payload.uid && f.type === action.payload.type)) {
-        return state; // ya existe
+        return state;
       }
       return {
         ...state,

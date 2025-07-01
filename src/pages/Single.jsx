@@ -4,20 +4,36 @@ import { useParams } from "react-router-dom";
 const Single = () => {
   const { type, uid } = useParams();
   const [data, setData] = useState(null);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     const fetchDetail = async () => {
       try {
         const res = await fetch(`https://www.swapi.tech/api/${type}/${uid}`);
+
+        if (!res.ok) {
+          throw new Error("Fetch failed");
+        }
+
         const result = await res.json();
         setData(result.result.properties);
-      } catch (error) {
-        console.error("Error fetching detail:", error);
+        setError(false);
+      } catch (err) {
+        console.error("Error fetching detail:", err);
+        setError(true);
       }
     };
 
     fetchDetail();
   }, [type, uid]);
+
+  if (error) {
+    return (
+      <div className="container text-center mt-5 text-danger">
+        <p>Error loading data</p>
+      </div>
+    );
+  }
 
   if (!data) {
     return (
@@ -114,3 +130,5 @@ const Single = () => {
 };
 
 export default Single;
+
+
