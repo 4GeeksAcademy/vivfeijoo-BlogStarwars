@@ -1,57 +1,60 @@
 body {
-  background-color: #f8f9fa;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Arial", sans-serif;
+  background-color: #f7f7f7;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-/* Card spacing and layout */
+.navbar-brand {
+  font-size: 1.5rem;
+  color: #000;
+}
+
 .card {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   transition: transform 0.2s ease-in-out;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .card:hover {
   transform: translateY(-5px);
 }
 
-/* Center the sections and titles */
-h2 {
-  margin-top: 2rem;
-  font-weight: bold;
-}
-
-/* Image fallback placeholder */
 .card-img-top {
+  height: 250px;
   object-fit: cover;
-  height: 200px;
 }
 
-/* Fix spacing in single page */
-.container .row {
-  margin-bottom: 2rem;
+.card-title {
+  font-weight: bold;
+  font-size: 1.2rem;
 }
 
-/* Star Wars logo custom size */
-.logo-img {
-  width: 100px;
-  height: auto;
-}
-
-/* Footer styling (optional) */
-.footer {
-  background-color: #212529;
-  color: white;
-  padding: 1rem 0;
+footer {
+  background-color: #000;
+  color: #fff;
+  padding: 10px;
   text-align: center;
-  margin-top: 3rem;
 }
 
-/* Favorites dropdown menu */
+.container h2 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: #dc3545;
+}
+
+.btn-outline-warning i {
+  color: red;
+}
+
+/* Estilo para tabla de detalles */
+.row.text-center .col {
+  font-weight: bold;
+  color: #dc3545;
+}
+
+/* Estilo para el dropdown de favoritos */
 .dropdown-menu {
-  min-width: 200px;
-}
-
-.dropdown-menu .dropdown-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  max-height: 200px;
+  overflow-y: auto;
 }

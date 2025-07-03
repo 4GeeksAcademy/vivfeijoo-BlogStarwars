@@ -6,9 +6,10 @@ import Single from "./pages/Single.jsx";
 const AppRoutes = () => (
   <Routes>
     <Route path="/" element={<Home />} />
-    <Route path="/people/:uid" element={<Single />} />
+    <Route path="/:type/:uid" element={<Single />} />
   </Routes>
 );
 
 export default AppRoutes;
+
 

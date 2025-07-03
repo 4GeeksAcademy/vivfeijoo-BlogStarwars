@@ -1,51 +1,66 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 
 const Home = () => {
-  const { store, dispatch } = useGlobalReducer();
+  const { dispatch } = useGlobalReducer();
+  const [people, setPeople] = useState([]);
+  const [planets, setPlanets] = useState([]);
+  const [vehicles, setVehicles] = useState([]);
+
+  const fetchData = async (type, setter) => {
+    try {
+      const res = await fetch(`https://www.swapi.tech/api/${type}`);
+      const data = await res.json();
+      setter(data.results);
+    } catch (err) {
+      console.error(`Error fetching ${type}:`, err);
+    }
+  };
 
   useEffect(() => {
-    fetch("https://www.swapi.tech/api/people")
-      .then(res => {
-        if (!res.ok) throw new Error("Fetch failed");
-        return res.json();
-      })
-      .then(data => {
-        if (data.results) dispatch({ type: "SET_PEOPLE", payload: data.results });
-      })
-      .catch(err => console.error("Error loading data", err));
-  }, [dispatch]);
+    fetchData("people", setPeople);
+    fetchData("planets", setPlanets);
+    fetchData("vehicles", setVehicles);
+  }, []);
 
-  if (!store.people) return <p>Loading...</p>;
+  const handleAddFavorite = (item, type) => {
+    dispatch({ type: "ADD_FAVORITE", payload: { ...item, type } });
+  };
+
+  const renderCards = (items, type) => (
+    items.map((item, i) => (
+      <div className="card m-2" style={{ width: "18rem" }} key={i}>
+        <img
+          src={`https://starwars-visualguide.com/assets/img/${type === "people" ? "characters" : type}/${item.uid}.jpg`}
+          className="card-img-top"
+          alt={item.name}
+        />
+        <div className="card-body">
+          <h5 className="card-title">{item.name}</h5>
+          <div className="d-flex justify-content-between">
+            <Link to={`/${type}/${item.uid}`} className="btn btn-outline-primary">
+              Learn more
+            </Link>
+            <button className="btn btn-outline-warning" onClick={() => handleAddFavorite(item, type)}>
+              <i className="fa-regular fa-heart"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    ))
+  );
 
   return (
-    <div className="container mt-4">
-      <h1>Star Wars Characters</h1>
-      <div className="row">
-        {store.people.map(item => (
-          <div key={item.uid} className="card m-2" style={{ width: "18rem" }}>
-            <img
-              src={`https://starwars-visualguide.com/assets/img/characters/${item.uid}.jpg`}
-              className="card-img-top"
-              alt={item.name}
-              onError={e => (e.target.src = "/fallback.png")}
-            />
-            <div className="card-body">
-              <h5 className="card-title">{item.name}</h5>
-              <Link to={`/people/${item.uid}`} className="btn btn-primary btn-sm">
-                Read More
-              </Link>
-              <button
-                className="btn btn-outline-warning btn-sm ms-2"
-                onClick={() => dispatch({ type: "ADD_FAVORITE", payload: item })}
-              >
-                ❤
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+    <div className="container">
+      <h2 className="text-danger mt-4">Characters</h2>
+      <div className="d-flex flex-wrap">{renderCards(people, "people")}</div>
+
+      <h2 className="text-danger mt-4">Planets</h2>
+      <div className="d-flex flex-wrap">{renderCards(planets, "planets")}</div>
+
+      <h2 className="text-danger mt-4">Vehicles</h2>
+      <div className="d-flex flex-wrap">{renderCards(vehicles, "vehicles")}</div>
     </div>
   );
 };

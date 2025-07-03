@@ -1,19 +1,23 @@
 import React from "react";
-import { BrowserRouter } from "react-router-dom";
-import { StoreProvider } from "../hooks/useGlobalReducer.jsx";
-import Navbar from "../components/Navbar.jsx";
-import Footer from "../components/Footer.jsx";
-import AppRoutes from "../routes.jsx";
+import { Routes, Route } from "react-router-dom";
+import Home from "./Home";
+import Single from "./Single";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
-const Layout = () => (
-  <BrowserRouter>
-    <StoreProvider>
+const Layout = () => {
+  return (
+    <>
       <Navbar />
-      <AppRoutes />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/people/:uid" element={<Single />} />
+        <Route path="/planets/:uid" element={<Single />} />
+        <Route path="/vehicles/:uid" element={<Single />} />
+      </Routes>
       <Footer />
-    </StoreProvider>
-  </BrowserRouter>
-);
+    </>
+  );
+};
 
 export default Layout;
-

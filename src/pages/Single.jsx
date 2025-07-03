@@ -2,53 +2,59 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 const Single = () => {
-  const { uid } = useParams();
-  const [item, setItem] = useState(null);
-  const [error, setError] = useState(false);
+  const { type, uid } = useParams();
+  const [data, setData] = useState(null);
 
   useEffect(() => {
-    fetch(`https://www.swapi.tech/api/people/${uid}`)
-      .then(res => {
-        if (!res.ok) throw new Error("Fetch failed");
-        return res.json();
-      })
-      .then(data => {
-        if (data.result && data.result.properties) {
-          setItem(data.result.properties);
-          setError(false);
-        } else {
-          setError(true);
-        }
-      })
-      .catch(err => {
-        console.error("Error loading data:", err);
-        setError(true);
-      });
-  }, [uid]);
+    const fetchDetail = async () => {
+      try {
+        const res = await fetch(`https://www.swapi.tech/api/${type}/${uid}`);
+        const result = await res.json();
+        setData(result.result.properties);
+      } catch (error) {
+        console.error("❌ Error fetching detail:", error);
+      }
+    };
 
-  if (error) return <div className="text-danger">Error loading data</div>;
-  if (!item) return <div>Loading...</div>;
+    fetchDetail();
+  }, [type, uid]);
+
+  if (!data) {
+    return (
+      <div className="container text-center mt-5">
+        <p>Loading...</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="container mt-4">
-      <h2>{item.name}</h2>
-      <div className="row">
+    <div className="container mt-5">
+      <div className="row align-items-center">
         <div className="col-md-6">
           <img
-            src={`https://starwars-visualguide.com/assets/img/characters/${uid}.jpg`}
+            src={`https://starwars-visualguide.com/assets/img/${type}/${uid}.jpg`}
+            alt={data.name}
             className="img-fluid rounded"
-            alt={item.name}
           />
         </div>
         <div className="col-md-6">
-          <p><strong>Height:</strong> {item.height}</p>
-          <p><strong>Mass:</strong> {item.mass}</p>
-          <p><strong>Hair Color:</strong> {item.hair_color}</p>
-          <p><strong>Skin Color:</strong> {item.skin_color}</p>
-          <p><strong>Eye Color:</strong> {item.eye_color}</p>
-          <p><strong>Birth Year:</strong> {item.birth_year}</p>
-          <p><strong>Gender:</strong> {item.gender}</p>
+          <h2>{data.name}</h2>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus
+            auctor ligula at quam convallis, at laoreet sapien dapibus.
+          </p>
         </div>
+      </div>
+
+      <hr className="my-4" />
+
+      <div className="row text-center text-danger">
+        <div className="col-md-2 fw-bold">Name<br />{data.name}</div>
+        <div className="col-md-2 fw-bold">Birth Year<br />{data.birth_year}</div>
+        <div className="col-md-2 fw-bold">Gender<br />{data.gender}</div>
+        <div className="col-md-2 fw-bold">Height<br />{data.height}</div>
+        <div className="col-md-2 fw-bold">Skin Color<br />{data.skin_color}</div>
+        <div className="col-md-2 fw-bold">Eye Color<br />{data.eye_color}</div>
       </div>
     </div>
   );
