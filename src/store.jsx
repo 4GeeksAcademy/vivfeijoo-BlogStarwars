@@ -1,24 +1,28 @@
 export const initialStore = () => ({
-  favorites: []
+  favorites: [],
 });
 
 export default function storeReducer(state, action) {
   switch (action.type) {
     case "ADD_FAVORITE":
-      if (state.favorites.find(f => f.uid === action.payload.uid && f.type === action.payload.type)) {
-        return state;
+      if (
+        state.favorites.find(
+          (fav) => fav.uid === action.payload.uid && fav.type === action.payload.type
+        )
+      ) {
+        return state; // ya existe
       }
       return {
         ...state,
-        favorites: [...state.favorites, action.payload]
+        favorites: [...state.favorites, action.payload],
       };
 
     case "REMOVE_FAVORITE":
       return {
         ...state,
         favorites: state.favorites.filter(
-          f => !(f.uid === action.payload.uid && f.type === action.payload.type)
-        )
+          (fav) => !(fav.uid === action.payload.uid && fav.type === action.payload.type)
+        ),
       };
 
     default:

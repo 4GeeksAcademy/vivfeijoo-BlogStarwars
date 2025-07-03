@@ -1,23 +1,17 @@
-import React from "react";
-import { Routes, Route } from "react-router-dom";
-import Home from "./Home";
-import Single from "./Single";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+// src/pages/Layout.jsx
 
-const Layout = () => {
+import { Outlet } from "react-router-dom";
+import ScrollToTop from "../components/ScrollToTop";
+import Navbar from "../components/Navbar.jsx";
+import Footer from "../components/Footer.jsx";
+
+// Base component that maintains the navbar and footer throughout the page and the scroll to top functionality.
+export default function Layout() {
   return (
-    <>
+    <ScrollToTop>
       <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/people/:uid" element={<Single />} />
-        <Route path="/planets/:uid" element={<Single />} />
-        <Route path="/vehicles/:uid" element={<Single />} />
-      </Routes>
+      <Outlet />
       <Footer />
-    </>
+    </ScrollToTop>
   );
-};
-
-export default Layout;
+}

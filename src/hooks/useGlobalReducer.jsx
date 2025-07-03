@@ -14,6 +14,9 @@ export function StoreProvider({ children }) {
 }
 
 export default function useGlobalReducer() {
-  const { store, dispatch } = useContext(StoreContext);
-  return { store, dispatch };
+  const context = useContext(StoreContext);
+  if (!context) {
+    throw new Error("useGlobalReducer must be used within a StoreProvider");
+  }
+  return context;
 }
